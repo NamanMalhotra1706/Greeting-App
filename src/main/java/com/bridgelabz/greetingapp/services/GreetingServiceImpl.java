@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class GreetingServiceImpl implements IGreetingService {
@@ -23,4 +24,22 @@ public class GreetingServiceImpl implements IGreetingService {
     public List<Greeting> getAllGreetings() {
         return greetingRepository.findAll();
     }
+
+    @Override
+    public void deleteGreetingById(long greetingId) {
+         greetingRepository.deleteById(greetingId);
+    }
+
+    @Override
+    public boolean updateGreetingById(Long id, String newMessage) {
+        Optional<Greeting> optionalGreeting = greetingRepository.findById(id);
+        if (optionalGreeting.isPresent()) {
+            Greeting greeting = optionalGreeting.get();
+            greeting.setMessage(newMessage); // update message (Setter in Greeting Model)
+            greetingRepository.save(greeting); // save updated entity
+            return true;
+        }
+        return false;
+    }
+
 }
